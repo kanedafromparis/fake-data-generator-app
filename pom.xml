@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.kanedafromparis.ose.fakedatagen</groupId>
-    <artifactId>FakeDateGen</artifactId>
+    <artifactId>FakeDataGen</artifactId>
     <packaging>war</packaging>
-    <version>0.1.0</version>
-    <name>FakeDateGen</name>
+    <version>0.1.1</version>
+    <name>FakeDataGen</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -65,6 +65,44 @@
             <build>
                 <finalName>FakeDateGenApp</finalName>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <outputDirectory>target</outputDirectory>
+                            <warName>ROOT</warName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>localtesing</id>
+            <dependencies>
+                <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-core -->
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                    <version>1.19.2</version>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-core -->
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-json</artifactId>
+                    <version>1.19.2</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <finalName>FakeDateGenApp</finalName>
+
+                <plugins>
+                    <plugin>
+                        <groupId>tomcat</groupId>
+                        <artifactId>tomcat</artifactId>
+                        <version>3.3.2</version>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>

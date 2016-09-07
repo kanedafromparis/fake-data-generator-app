@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Calendar;
 
 public class FakeDataGenerator {
 
@@ -26,9 +28,10 @@ public class FakeDataGenerator {
     public String generateFakeData(String dir, Integer deep, Boolean saveToDtb, Boolean saveToFile) {
         StringBuilder sb = new StringBuilder();
         Fairy fairy = Fairy.create();
+        Calendar start = Calendar.getInstance();
         try {
-            if (StringUtils.isEmpty(dir)) {
-                dir = System.getProperty("user.home");
+            if (StringUtils.isBlanck(dir)) {
+                dir = System.getProperty("user.home")+"/target";
             }
             String databaseURL = "jdbc:hsqlhb://";
             databaseURL += System.getenv("HSQLDB_SERVICE_HOST");
@@ -36,12 +39,17 @@ public class FakeDataGenerator {
             String username = System.getenv("HSQLDB_USER");
             String password = System.getenv("HSQLDB_PASSWORD");
             String rootfile = System.getenv("ROOT_FILE");
-            Connection connection = DriverManager.getConnection(databaseURL, username, password);
+            Connection connection = null;
+            if (saveToDtb){
+                connection = DriverManager.getConnection(databaseURL, username, password);
+            }
             sb.append("{ company : [");
 
             while (deep > 0) {
-                Integer nbPersonnes = RandomUtils.nextInt(0, 100);
+                deep = deep -1;
+                Integer nbPersonnes = RandomUtils.nextInt(0, 10000);
                 Integer nbPersonnesComp = nbPersonnes.intValue();
+                System.out.println(MessageFormat.format("Creating {0} user", nbPersonnesComp));
                 Company company = fairy.company();
 
                 String companyName = company.name();
@@ -60,7 +68,7 @@ public class FakeDataGenerator {
                     sbPersonnes = new StringBuilder();
                     Person person = fairy.person();
                     String firstname = person.firstName();
-                    String lastname = person.firstName();
+                    String lastname = person.lastName();
 
                     CreditCard card = fairy.creditCard();
                     String cardVendor = card.vendor();
@@ -81,9 +89,11 @@ public class FakeDataGenerator {
                     sbPersonnes.append("\",");
                     sbPersonnes.append("cardVendor : \"");
                     sbPersonnes.append(cardVendor);
+                    sbPersonnes.append("\",");
 
 
                     if (saveToFile) {
+                        System.out.println("Save To File");
                         File dirCompany = new File(rootfile, companyName);
                         if (!dirCompany.exists()) {
                             dirCompany.mkdirs();
@@ -91,7 +101,7 @@ public class FakeDataGenerator {
                         File filePersonnes = new File(companyName, person.fullName().toLowerCase());
                         StringBuilder sblocal = new StringBuilder();
                         sblocal.append(sbPersonnes);
-                        sblocal.append(",adress : {");
+                        sblocal.append("adress : {");
                         sblocal.append("stnum : \"");
                         sblocal.append(stnum);
                         sblocal.append("\",");
@@ -109,8 +119,12 @@ public class FakeDataGenerator {
                         FileWriterWithEncoding writer;
                         writer = new FileWriterWithEncoding(filePersonnes, "UTF-8", Boolean.TRUE);
                         writer.write(sblocal.toString());
+                        writer.flush();
+                        writer.close();
+
                     }
                     if (saveToDtb) {
+                        System.out.println("Save To DTB");
                         String sql = "INSERT PERSONES (FIRSTNAME, LASTNAME, PHONE,CBVALUE) VALUES (?,?,?)";
 
                         PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -137,7 +151,7 @@ public class FakeDataGenerator {
                     sbPersonnes.append(",");
                 }
                 if (sbPersonnes != null) {
-                    sbPersonnes.deleteCharAt(sbPersonnes.length());
+                    sbPersonnes.deleteCharAt(sbPersonnes.length()-1);
                 }
                 if (saveToDtb) {
                     String sql = "INSERT COMPANY (COMPANYNAME, NBPERSONNES) VALUES (?,?)";
@@ -150,7 +164,12 @@ public class FakeDataGenerator {
                 }
             }
             sb.append("]}");
-            connection.close();
+            if(connection != null) {
+                connection.close();
+            }
+            Calendar end = Calendar.getInstance();
+            long delta = end.getTimeInMillis() - start.getTimeInMillis();
+            System.out.println(MessageFormat.format("Process took {0} Milliseconds", delta));
             return sb.toString();
 
         } catch (IOException e) {

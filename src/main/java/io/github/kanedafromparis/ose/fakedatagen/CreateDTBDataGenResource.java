@@ -13,7 +13,7 @@ public class CreateDTBDataGenResource {
     @Produces("application/json")
     public HashMap<String, String> getInsult() {
         HashMap<String, String> theInsult = new HashMap<String, String>();
-        theInsult.put("insult", new CreateDataGenerator().createTable());
+        theInsult.put("insult", new CreateDataGenerator().create());
         return theInsult;
     }
 }
