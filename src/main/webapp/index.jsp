@@ -13,13 +13,13 @@
     //generateFakeData(String dir, Integer deep, Boolean saveToDtb, Boolean saveToFile)
     if("true".equals(request.getParameter("saveToDtb"))){
         if("true".equals(request.getParameter("saveToFile"))){
-            out.println(new FakeDataGenerator().generateFakeData("", 1, Boolean.TRUE, Boolean.TRUE));
+            out.println(new FakeDataGenerator().generateFakeData(1, Boolean.TRUE, Boolean.TRUE));
 
         }else{
-            out.println(new FakeDataGenerator().generateFakeData("", 1, Boolean.TRUE, Boolean.FALSE));
+            out.println(new FakeDataGenerator().generateFakeData(1, Boolean.TRUE, Boolean.FALSE));
         }
     }else if("true".equals(request.getParameter("saveToFile"))){
-        out.println(new FakeDataGenerator().generateFakeData("", 1, Boolean.FALSE, Boolean.TRUE));
+        out.println(new FakeDataGenerator().generateFakeData(1, Boolean.FALSE, Boolean.TRUE));
     }else{
         out.println(new FakeDataGenerator().generateFakeData());
     }

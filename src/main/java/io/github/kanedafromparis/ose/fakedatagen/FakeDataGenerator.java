@@ -22,23 +22,25 @@ import java.util.Calendar;
 public class FakeDataGenerator {
 
     public String generateFakeData() {
-        return this.generateFakeData(StringUtils.EMPTY, 10, Boolean.FALSE, Boolean.FALSE);
+        return this.generateFakeData(10, Boolean.FALSE, Boolean.FALSE);
     }
 
-    public String generateFakeData(String dir, Integer deep, Boolean saveToDtb, Boolean saveToFile) {
+    public String generateFakeData(Integer deep, Boolean saveToDtb, Boolean saveToFile) {
         StringBuilder sb = new StringBuilder();
         Fairy fairy = Fairy.create();
         Calendar start = Calendar.getInstance();
         try {
-            if (StringUtils.isBlank(dir)) {
-                dir = System.getProperty("user.home")+"/target";
-            }
             String databaseURL = "jdbc:hsqlhb://";
             databaseURL += System.getenv("HSQLDB_SERVICE_HOST");
             databaseURL += "/" + System.getenv("HSQLDB_DATABASE");
             String username = System.getenv("HSQLDB_USER");
             String password = System.getenv("HSQLDB_PASSWORD");
             String rootfile = System.getenv("ROOT_FILE");
+            if (StringUtils.isBlank(rootfile)) {
+                rootfile = System.getProperty("user.dir")+"/target";
+                System.out.println(MessageFormat.format("Using {0} ", rootfile));
+            }
+
             Connection connection = null;
             if (saveToDtb){
                 connection = DriverManager.getConnection(databaseURL, username, password);
@@ -98,7 +100,7 @@ public class FakeDataGenerator {
                         if (!dirCompany.exists()) {
                             dirCompany.mkdirs();
                         }
-                        File filePersonnes = new File(companyName, person.fullName().toLowerCase());
+                        File filePersonnes = new File(dirCompany, person.fullName().toLowerCase());
                         StringBuilder sblocal = new StringBuilder();
                         sblocal.append(sbPersonnes);
                         sblocal.append("adress : {");
