@@ -30,7 +30,7 @@ public class FakeDataGenerator {
         Fairy fairy = Fairy.create();
         Calendar start = Calendar.getInstance();
         try {
-            if (StringUtils.isBlanck(dir)) {
+            if (StringUtils.isBlank(dir)) {
                 dir = System.getProperty("user.home")+"/target";
             }
             String databaseURL = "jdbc:hsqlhb://";
