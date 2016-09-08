@@ -30,11 +30,7 @@ public class FakeDataGenerator {
         Fairy fairy = Fairy.create();
         Calendar start = Calendar.getInstance();
         try {
-            String databaseURL = "jdbc:hsqlhb://";
-            databaseURL += System.getenv("HSQLDB_SERVICE_HOST");
-            databaseURL += "/" + System.getenv("HSQLDB_DATABASE");
-            String username = System.getenv("HSQLDB_USER");
-            String password = System.getenv("HSQLDB_PASSWORD");
+
             String rootfile = System.getenv("ROOT_FILE");
             if (StringUtils.isBlank(rootfile)) {
                 rootfile = System.getProperty("user.dir")+"/target";
@@ -43,7 +39,11 @@ public class FakeDataGenerator {
 
             Connection connection = null;
             if (saveToDtb){
-                connection = DriverManager.getConnection(databaseURL, username, password);
+                CreateDataGenerator create = new CreateDataGenerator();
+
+                connection = create.getConnection();
+
+                create.createTable(connection);
             }
             sb.append("{ company : [");
 
@@ -127,7 +127,7 @@ public class FakeDataGenerator {
                     }
                     if (saveToDtb) {
                         System.out.println("Save To DTB");
-                        String sql = "INSERT PERSONES (FIRSTNAME, LASTNAME, PHONE,CBVALUE) VALUES (?,?,?)";
+                        String sql = "INSERT INTO PERSONES (FIRSTNAME, LASTNAME, PHONE,CBVALUE) VALUES (?,?,?,?)";
 
                         PreparedStatement pstmt = connection.prepareStatement(sql);
                         pstmt.setString(1, firstname);
@@ -137,7 +137,7 @@ public class FakeDataGenerator {
 
                         boolean execute = pstmt.execute();
 
-                        sql = "INSERT ADRESS (STREETNUM, STREETNAME, POSTALCODE, CITY) VALUES (?,?,?)";
+                        sql = "INSERT INTO ADRESS (STREETNUM, STREETNAME, POSTALCODE, CITY) VALUES (?,?,?,?)";
 
                         pstmt = connection.prepareStatement(sql);
                         pstmt.setString(1, stnum);
@@ -156,7 +156,7 @@ public class FakeDataGenerator {
                     sbPersonnes.deleteCharAt(sbPersonnes.length()-1);
                 }
                 if (saveToDtb) {
-                    String sql = "INSERT COMPANY (COMPANYNAME, NBPERSONNES) VALUES (?,?)";
+                    String sql = "INSERT INTO COMPANY (COMPANYNAME, NBPERSONNES) VALUES (?,?)";
 
                     PreparedStatement pstmt = connection.prepareStatement(sql);
                     pstmt.setString(1, companyName);
@@ -180,6 +180,9 @@ public class FakeDataGenerator {
         } catch (SQLException e) {
             e.printStackTrace();
 
+            return e.getLocalizedMessage();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             return e.getLocalizedMessage();
         }
     }
