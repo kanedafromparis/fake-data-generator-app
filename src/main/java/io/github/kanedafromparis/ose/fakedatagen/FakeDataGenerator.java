@@ -95,7 +95,7 @@ public class FakeDataGenerator {
 
 
                     if (saveToFile) {
-                        System.out.println("Save To File");
+                        //System.out.println("Save To File");
                         File dirCompany = new File(rootfile, companyName);
                         if (!dirCompany.exists()) {
                             dirCompany.mkdirs();
@@ -126,7 +126,7 @@ public class FakeDataGenerator {
 
                     }
                     if (saveToDtb) {
-                        System.out.println("Save To DTB");
+                        //System.out.println("Save To DTB");
                         String sql = "INSERT INTO PERSONES (FIRSTNAME, LASTNAME, PHONE,CBVALUE) VALUES (?,?,?,?)";
 
                         PreparedStatement pstmt = connection.prepareStatement(sql);
