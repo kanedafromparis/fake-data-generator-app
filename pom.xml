@@ -24,6 +24,16 @@
             <groupId>com.devskiller</groupId>
             <artifactId>jfairy</artifactId>
             <version>0.6.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- dependency bot sugestion -->
         <dependency>
@@ -34,7 +44,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1.1-jre</version>
+            <version>32.1.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
