@@ -1,11 +1,11 @@
 package io.github.kanedafromparis.ose.fakedatagen;
 
 
-import io.codearte.jfairy.Fairy;
-import io.codearte.jfairy.producer.company.Company;
-import io.codearte.jfairy.producer.payment.CreditCard;
-import io.codearte.jfairy.producer.person.Address;
-import io.codearte.jfairy.producer.person.Person;
+import com.devskiller.jfairy.Fairy;
+import com.devskiller.jfairy.producer.company.Company;
+import com.devskiller.jfairy.producer.payment.CreditCard;
+import com.devskiller.jfairy.producer.person.Address;
+import com.devskiller.jfairy.producer.person.Person;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +54,7 @@ public class FakeDataGenerator {
                 System.out.println(MessageFormat.format("Creating {0} user", nbPersonnesComp));
                 Company company = fairy.company();
 
-                String companyName = company.name();
+                String companyName = company.getName();
                 String annotation = fairy.textProducer().sentence();
                 sb.append("{");
                 sb.append("companyName : \"");
@@ -69,16 +69,16 @@ public class FakeDataGenerator {
                     nbPersonnes = nbPersonnes - 1;
                     sbPersonnes = new StringBuilder();
                     Person person = fairy.person();
-                    String firstname = person.firstName();
-                    String lastname = person.lastName();
+                    String firstname = person.getFirstName();
+                    String lastname = person.getLastName();
 
                     CreditCard card = fairy.creditCard();
-                    String cardVendor = card.vendor();
+                    String cardVendor = card.getVendor();
 
                     Address adress = person.getAddress();
 
-                    String stnum = adress.streetNumber();
-                    String street = adress.street();
+                    String stnum = adress.getStreetNumber();
+                    String street = adress.getStreet();
                     String postalCode = adress.getPostalCode();
                     String city = adress.getCity();
 
@@ -100,7 +100,7 @@ public class FakeDataGenerator {
                         if (!dirCompany.exists()) {
                             dirCompany.mkdirs();
                         }
-                        File filePersonnes = new File(dirCompany, person.fullName().toLowerCase());
+                        File filePersonnes = new File(dirCompany, person.getFullName().toLowerCase());
                         StringBuilder sblocal = new StringBuilder();
                         sblocal.append(sbPersonnes);
                         sblocal.append("adress : {");
@@ -132,7 +132,7 @@ public class FakeDataGenerator {
                         PreparedStatement pstmt = connection.prepareStatement(sql);
                         pstmt.setString(1, firstname);
                         pstmt.setString(2, lastname);
-                        pstmt.setString(3, person.telephoneNumber());
+                        pstmt.setString(3, person.getTelephoneNumber());
                         pstmt.setString(4, cardVendor);
 
                         boolean execute = pstmt.execute();
